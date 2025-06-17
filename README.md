@@ -1,6 +1,6 @@
 # Roadmap
 
-1. Create the repo and find a cool name
+1. Setup github repo
 
 # Problem
 
