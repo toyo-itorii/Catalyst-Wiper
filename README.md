@@ -1,6 +1,6 @@
 # Roadmap
 
-1. Setup github repo
+1. Build the base : a script that will automate factory reset of Catalyst switches (3750 to begin with). It will work only when there's no friction (no rommon, nor password)
 
 # Problem
 
