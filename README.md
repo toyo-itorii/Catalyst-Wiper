@@ -1,6 +1,6 @@
 # Roadmap
 
-1. Cook a python script that factory reset a password locked Cisco 3750.
+1. Create the repo and find a cool name
 
 # Problem
 
