@@ -17,31 +17,20 @@ def list_serial_ports():
     if not ports:
         print("No serial ports found.")
         return []
-    print("Available serial ports:")
-    for i, port in enumerate(ports):
-        print(f"{i + 1}: {port.device} - {port.description}")
+    print("\Available serial ports:")
+    for i,port in enumerate(ports):
+        print(f"{i}: {port.device} - {port.description}")
     return ports
-
-def detect_rommon(serial_port, baud_rate=9600):
-    with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
-        print(f"Listening on {serial_port} at {baud_rate} baud...")
-        while True:
-            line = ser.readline().decode(errors='ignore').strip()
-            if line:
-                print(f"Received: {line}")
-                if line.lower().startswith('switch:'):
-                    print("Device is in ROMMON mode!")
-                    break
 
 if __name__ == "__main__":
     ports = list_serial_ports()
     if not ports:
         exit(1)
-    choice = input("Select the serial port number: ").strip()
+        
+    choice = input("\nSelect the serial port number: ").strip()
     try:
         idx = int(choice) - 1
         selected_port = ports[idx].device
     except (ValueError, IndexError):
         print("Invalid selection.")
         exit(1)
-    detect_rommon(selected_port)
