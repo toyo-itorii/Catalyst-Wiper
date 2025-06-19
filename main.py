@@ -3,12 +3,6 @@
 # 3. rename flash:config.text flash:config.old
 # 4. boot
 
-# Once booted, run the following commands to remove the old vlans
-
-# 1. erase startup-config
-# 2. delete flash:vlan.dat
-# 3. reload
-
 import serial
 import serial.tools.list_ports
 import time
@@ -73,3 +67,11 @@ def boot(port, baudrate=9600, timeout=2):
 send_flash_init(selected_port)
 rename_flash_config(selected_port)
 boot(selected_port)
+
+
+# Once booted, run the following commands to remove the old vlans and finis the reset;
+
+# 1. wait for the device to boot completely
+# 2. erase startup-config
+# 3. delete flash:vlan.dat
+# 4. reload
