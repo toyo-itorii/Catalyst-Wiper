@@ -1,7 +1,24 @@
-# 1. Boot in Rommon
+# 1. Choose the serial port connected to the device and wait for the ROMMON prompt.
+
 # 2. flash_init
 # 3. rename flash:config.text flash:config.old
 # 4. boot
+# Once booted, run the following commands to remove the old vlans and finis the reset;
+# 1. wait for the device to boot completely
+# Would you like to enter the initial configuration dialog? [yes/no]: no
+# 2. Enable
+# 3. erase startup-config
+# Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]
+
+# 3. delete flash:vlan.dat
+# Delete filename [vlan.dat]?
+# Delete flash:/vlan.dat? [confirm]
+# 4. reload
+# Process with reload [confirm]
+# Would you like to enter the initial configuration dialog? [yes/no]: no
+# enable
+# show running-config
+
 
 import serial
 import serial.tools.list_ports
@@ -30,12 +47,6 @@ def check_rommon_prompt(port, baudrate=9600, timeout=2):
     except Exception as e:
         print(f"Error: {e}")
         return False
-
-if __name__ == "__main__":
-    ports = list_serial_ports()
-    idx = int(input("Select the serial port number: ").strip())
-    selected_port = ports[idx].device
-    check_rommon_prompt(selected_port)
 
 def send_flash_init(port, baudrate=9600, timeout=2):
     with serial.Serial(port, baudrate=baudrate, timeout=timeout) as ser:
@@ -94,6 +105,11 @@ def delete_vlan_dat(port, baudrate=9600, timeout=2):
 
         print("Final device output after deleting vlan.dat:\n", output)
 
+if __name__ == "__main__":
+    ports = list_serial_ports()
+    idx = int(input("Select the serial port number: ").strip())
+    selected_port = ports[idx].device
+    check_rommon_prompt(selected_port)
 
 send_flash_init(selected_port)
 rename_flash_config(selected_port)
@@ -101,10 +117,3 @@ boot(selected_port)
 
 # Wait for the device to boot completely before running this
 delete_vlan_dat(selected_port)
-
-# Once booted, run the following commands to remove the old vlans and finis the reset;
-
-# 1. wait for the device to boot completely
-# 2. erase startup-config
-# 3. delete flash:vlan.dat
-# 4. reload
