@@ -1,3 +1,5 @@
+# Todo : fix the rommon part
+
 # 1. Choose the serial port connected to the device and wait for the ROMMON prompt.
 
 # 2. flash_init
@@ -30,22 +32,30 @@ def list_serial_ports():
     return ports  # Return the list of ports
 
 def check_rommon_prompt(port, baudrate=9600, timeout=2):
+    """
+    Continuously checks if the device is in ROMMON mode.
+    If not, sends break signals to try to enter ROMMON mode while the device boots.
+    """
     try:
-        with serial.Serial(port, baudrate=baudrate, timeout=timeout) as ser:  # Open the serial port with specified parameters
-            # Send newline to trigger prompt
-            ser.write(b'\r\n')  # Send a carriage return and newline to the device to trigger a prompt
-            time.sleep(1)  # Wait for 1 second to allow the device to respond
-            output = ser.read(ser.in_waiting or 128).decode(errors='ignore')  # Read available bytes from the serial buffer and decode
-            print(f"Output from device:\n{output}")  # Print the output received from the device
-            if "switch:" in output.lower():  # Check if the ROMMON prompt is present in the output
-                print("ROMMON prompt detected. Connected to the correct device.")  # Print confirmation if ROMMON prompt is detected
-                return True  # Return True if ROMMON prompt is detected
-            else:
-                print("ROMMON prompt not detected. Check your connection or device state.")  # Print warning if ROMMON prompt is not detected
-                return False  # Return False if ROMMON prompt is not detected
+        with serial.Serial(port, baudrate=baudrate, timeout=timeout) as ser:  # Open the serial port
+            while True:  # Loop until ROMMON prompt is detected
+                ser.write(b'\r\n')  # Send newline to trigger prompt
+                time.sleep(1)  # Wait for device to respond
+                output = ser.read(ser.in_waiting or 128).decode(errors='ignore')  # Read output
+                print(f"Output from device:\n{output}")  # Print output
+
+                if "switch:" in output.lower():  # Check for ROMMON prompt
+                    print("ROMMON prompt detected. Connected to the correct device.")
+                    return True  # Exit loop if ROMMON detected
+
+                print("ROMMON prompt not detected. Sending break signal to enter ROMMON mode...")
+                # Send break signal (Ctrl+Break or equivalent)
+                ser.send_break()  # Send break signal to serial port
+                time.sleep(2)  # Wait before next attempt
+
     except Exception as e:
-        print(f"Error: {e}")  # Print any exception that occurs during serial communication
-        return False  # Return False if an exception occurs
+        print(f"Error: {e}")
+        return False
 
 def send_flash_init(port, baudrate=9600, timeout=2):
     with serial.Serial(port, baudrate=baudrate, timeout=timeout) as ser:  # Open the serial port with specified parameters
