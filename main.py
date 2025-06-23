@@ -63,11 +63,44 @@ def boot(port, baudrate=9600, timeout=2):
         output = ser.read(ser.in_waiting or 4096).decode(errors='ignore')
         print("Device output after flash_init:\n", output)
 
+def delete_vlan_dat(port, baudrate=9600, timeout=2):
+    """
+    Sends the 'delete flash:vlan.dat' command to the device after it has booted.
+    Automatically confirms all prompts from the device.
+    Prints all output from the device.
+    """
+    with serial.Serial(port, baudrate=baudrate, timeout=timeout) as ser:
+        # Send the delete command
+        ser.write(b'delete flash:vlan.dat\r\n')
+        time.sleep(1)
+        output = ser.read(ser.in_waiting or 4096).decode(errors='ignore')
+        print("Device output after sending delete command:\n", output)
+
+        # Confirm filename prompt if present
+        if "Delete filename" in output or "delete filename" in output:
+            ser.write(b'\r\n')
+            time.sleep(1)
+            output2 = ser.read(ser.in_waiting or 4096).decode(errors='ignore')
+            print("Device output after confirming filename:\n", output2)
+            output += output2
+
+        # Confirm [confirm] prompt if present
+        if "[confirm]" in output or "confirm" in output.lower():
+            ser.write(b'\r\n')
+            time.sleep(1)
+            output3 = ser.read(ser.in_waiting or 4096).decode(errors='ignore')
+            print("Device output after confirming delete:\n", output3)
+            output += output3
+
+        print("Final device output after deleting vlan.dat:\n", output)
+
 
 send_flash_init(selected_port)
 rename_flash_config(selected_port)
 boot(selected_port)
 
+# Wait for the device to boot completely before running this
+delete_vlan_dat(selected_port)
 
 # Once booted, run the following commands to remove the old vlans and finis the reset;
 
