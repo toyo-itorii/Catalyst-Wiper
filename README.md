@@ -127,7 +127,14 @@ For issues and questions:
 
 ## Changelog
 
-### v1.0.0 (2025-06-23)
+### v1.0 (2025-06-23)
 - Initial release
 - Support for Catalyst 2960/3560/3750 series
 - Singe unit processing support
+
+### v1.1 (2025-06-27)
+- Seamless automation
+
+### v1.2 (2025-07-04)
+- Graphical upgrade
+- Log completion status
