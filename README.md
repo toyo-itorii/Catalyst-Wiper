@@ -1,5 +1,7 @@
 ![image](https://github.com/user-attachments/assets/45a5ab9d-e485-4a1d-b5e7-534229120baf)
 
+<!-- Make the Readme more technical looking -->
+
 # Catalyst Wiper
 
 A Python script to perform factory reset operations on Cisco Catalyst switches via serial connection.
